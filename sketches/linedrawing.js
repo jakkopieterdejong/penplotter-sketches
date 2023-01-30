@@ -1,6 +1,6 @@
 let img;
 function preload() {
-  img = loadImage('assets/roos.jpg');
+  img = loadImage('../assets/ape.jfif');
 }
 
 function setup() {
@@ -72,7 +72,7 @@ function interferenceCircles(img, r_step, displacement_factor) {
 }
 
 function keyPressed() {
-    if (key="s"){
+    if (key=="s"){
         save('lines.svg')
     }
 }

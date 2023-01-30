@@ -1,6 +1,3 @@
-function pol2cart(r, th) {return [r * cos(th), r * sin(th)]}
-
-
 class Node {
   constructor(pos) {
     this.pos = pos;
