@@ -79,19 +79,19 @@ function drawCrossover(rmax, rmin, theta, crossover_lr){
 function circleMaze(start_radius, end_radius, growth_factor, crossover_chance, crossover_lr){
   let radius = start_radius;
   let door_angle = 2*asin((1-growth_factor)/(1+growth_factor));
-  let max_thetas = floor(360 / (5*door_angle))
+  let max_thetas = floor(360 / (6*door_angle))
   let new_radius;
   let th_prev = [];
   let th_this;
+  print(360 / (6*door_angle))
 
   while (radius > end_radius){
     new_radius = radius * growth_factor;
-    th_this = randomAngles(int(random(3, max_thetas)), [...th_prev], 2*door_angle);
-    //th_this = randomAngles(1, [...th_prev], 2*door_angle);
+    th_this = randomAngles(int(random(ceil(max_thetas/2), max_thetas)), [...th_prev], 2*door_angle);
+    //th_this = randomAngles(max_thetas, [...th_prev], 2*door_angle);
     for (let i=0; i<th_this.length; i++){
       let [x1, y1] = pol2cart(radius, th_this[i]);
       let [x2, y2] = pol2cart(new_radius, th_this[i]);
-      //line(x1, y1, x2, y2);
     }
     
     drawArcs(radius, th_this.concat(th_prev), door_angle);
@@ -117,43 +117,42 @@ class Circle {
   }
 }
 
-let circles = [];
+function drawCircleGrid() {
+  translate(width/8, height/6);
+  let start_radius = 0.8*min(width/8, height/6);
+  for (let x=0; x<4; x++){
+    for (let y=0; y<3; y++){
+      push();
+      translate(0.25*x*width, (1/3)*y*height);
+      circleMaze(start_radius=start_radius, end_radius=0.05*start_radius, growth_factor=0.55+0.1*x, crossover_chance=0.1+0.4*y, crossover_lr=0.5);
+      pop();
+    }
+  }
+}
+
+
 let seed;
 
 function setup() {
-  createCanvas(297, 442, SVG);
+  createCanvas(A4_dims.long*5, A4_dims.short*5, SVG);
   noFill()
   noLoop()
   angleMode(DEGREES)
   stroke(0);
   strokeWeight(1);
   seed = hour()+minute()+second();
-  for (let i=0; i<100; i++) {
-    let x = random(0, width);
-    let y = random(0, height);
-    let r = random(width/100, width/10);
-  }
 }
 
-
 function draw() {
-  randomSeed(seed);
-
-  push();
-  translate(width/4, height/4);
-  circleMaze(start_radius=0.2*width, end_radius=10, growth_factor=0.8, crossover_chance=0.5, crossover_lr=0.5);
-  pop();
-  push();
-  translate(3*width/4, height/4);
-  circleMaze(start_radius=0.2*width, end_radius=10, growth_factor=0.85, crossover_chance=0.5, crossover_lr=0.5);
-  pop();
-  push();
-  translate(width/4, 3*height/4);
-  circleMaze(start_radius=0.2*width, end_radius=10, growth_factor=0.9, crossover_chance=0.5, crossover_lr=0.5);
-  pop();
-  push();
-  translate(3*width/4, 3*height/4);
-  circleMaze(start_radius=0.2*width, end_radius=10, growth_factor=0.95, crossover_chance=0.5, crossover_lr=0.5);
+  let start_radius = 0.4*min(width, height);
+  for (let i=0; i<10; i++){
+    randomSeed(seed);
+    push();
+    translate(0.5*width, 0.5*height);
+    scale(1+0.015*i)
+    circleMaze(start_radius=start_radius, end_radius=0.02*start_radius, growth_factor=0.85, crossover_chance=0.5, crossover_lr=0.5);
+    pop();
+  }
 }
 
 function keyPressed() {
