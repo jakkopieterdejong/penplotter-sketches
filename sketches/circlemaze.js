@@ -147,10 +147,11 @@ function draw() {
   let start_radius = 0.4*min(width, height);
   for (let i=0; i<10; i++){
     randomSeed(seed);
+    strokeWeight(0.5+0.2*i)
     push();
     translate(0.5*width, 0.5*height);
     scale(1+0.015*i)
-    circleMaze(start_radius=start_radius, end_radius=0.02*start_radius, growth_factor=0.85, crossover_chance=0.5, crossover_lr=0.5);
+    circleMaze(start_radius=start_radius, end_radius=(0.05+0.03*i)*start_radius, growth_factor=0.85, crossover_chance=0.5, crossover_lr=0.5);
     pop();
   }
 }
