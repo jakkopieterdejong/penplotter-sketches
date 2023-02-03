@@ -2,7 +2,7 @@ let img, pg;
 const debugging = false;
 
 function preload() {
-  img = loadImage('./assets/Spheer.ai-52.jpg');
+  img = loadImage('./assets/Spheer.ai-50.jpg');
 }
 
 function setup() {
@@ -28,8 +28,8 @@ function setup() {
 }
 
 function draw() {
-    //interferenceCircles(5, -3)
-    interferenceLines(7, 5)
+    interferenceCircles(5, -4)
+    //interferenceLines(7, 5)
     if (debugging) {
         background(0);
         image(pg, 0, 0)
@@ -65,7 +65,7 @@ function interferenceCircles(r_step, displacement_factor) {
     let x, y, intensity, displacement, th_step;
     let y_offset = -320;
     let x_offset = -20;
-    let sc = 0.5;
+    let sc = 0.6;
 
     for (let r=r_step; r<=width/2; r+=r_step) {
         th_step = 2*PI / (2*PI*r / r_step);

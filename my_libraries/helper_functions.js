@@ -9,5 +9,14 @@ function angleBetween(a, b, n) {
 	return a <= n || n <= b;
 }
 
+function quantize_angle(a, n) {
+	return round(a * n/TWO_PI) * TWO_PI/n;
+}
+  
+function mod(n, m) {
+	let remain = n % m
+	return Math.floor(remain >= 0 ? remain : remain + m)
+}
+
 const A3_dims = {'short': 297, 'long': 420};
 const A4_dims = {'short': 210, 'long': 297};

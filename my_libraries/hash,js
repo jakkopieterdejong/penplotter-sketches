@@ -1,0 +1,22 @@
+function getByteVariables(hex) {
+  if (hex.substring(0,2) == '0x'){
+    hex = hex.substring(2, hex.length);
+  }
+  let values = [];
+  let numBytes = Math.floor(hex.length/2);
+  for (let i=0; i<numBytes; i++) { 
+    values.push(parseInt(hex.substring(i*2, (i+1)*2), 16));
+  }
+  return values;
+}
+
+function genTokenData(projectNum) {
+  let data = {};
+  let hash = "0x";
+  for (var i = 0; i < 64; i++) {
+    hash += Math.floor(random() * 16).toString(16);
+  }
+  data.hash = hash;
+  data.tokenId = (projectNum * 1000000 + Math.floor(random() * 1000)).toString();
+  return data;
+}
