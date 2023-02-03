@@ -88,7 +88,7 @@ function circleMaze(start_radius, end_radius, growth_factor, crossover_chance, c
   while (radius > end_radius){
     new_radius = radius * growth_factor;
     th_this = randomAngles(int(random(ceil(max_thetas/2), max_thetas)), [...th_prev], 2*door_angle);
-    //th_this = randomAngles(max_thetas, [...th_prev], 2*door_angle);
+    //th_this = randomAngles(2, [...th_prev], 2*door_angle);
     for (let i=0; i<th_this.length; i++){
       let [x1, y1] = pol2cart(radius, th_this[i]);
       let [x2, y2] = pol2cart(new_radius, th_this[i]);
@@ -134,7 +134,7 @@ function drawCircleGrid() {
 let seed;
 
 function setup() {
-  createCanvas(A4_dims.long*5, A4_dims.short*5, SVG);
+  createCanvas(A3_dims.short*4, A3_dims.long*6, SVG);
   noFill()
   noLoop()
   angleMode(DEGREES)
@@ -145,13 +145,14 @@ function setup() {
 
 function draw() {
   let start_radius = 0.4*min(width, height);
-  for (let i=0; i<10; i++){
+  for (let i=0; i<5; i++){
     randomSeed(seed);
-    strokeWeight(0.5+0.2*i)
+    strokeWeight(1)
     push();
-    translate(0.5*width, 0.5*height);
-    scale(1+0.015*i)
-    circleMaze(start_radius=start_radius, end_radius=(0.05+0.03*i)*start_radius, growth_factor=0.85, crossover_chance=0.5, crossover_lr=0.5);
+    translate(0.5*width+i*5, 0.5*height);
+    //scale(1+0.015*i)
+    //drawCircleGrid()
+    circleMaze(start_radius=start_radius, end_radius=0.08*start_radius, growth_factor=0.85, crossover_chance=0.0, crossover_lr=0.5);
     pop();
   }
 }

@@ -1,49 +1,71 @@
-let img;
+let img, pg;
+const debugging = false;
+
 function preload() {
-  img = loadImage('../assets/ape.jfif');
+  img = loadImage('./assets/Spheer.ai-52.jpg');
 }
 
 function setup() {
-    img.resize(0, 600);
-    img.filter(GRAY);
-    img.filter(BLUR, 2);    
-    createCanvas(img.width, img.height, SVG);
+    createCanvas(A4_dims.short*4, A4_dims.long*4, SVG);
+    pg = createGraphics(width, height);
     
-    background(0);
+    img.filter(GRAY);
+    img.filter(BLUR, 4);    
+    if (img.width/img.height > width/height) {
+        img.resize(width, 0);
+    }
+    else {
+        img.resize(0, height);
+    }
+    print(width, height, img.width, img.height);
+    print(pixelDensity())
+    pg.image(img, (width-img.width)/2, (height-img.height)/2);
+    
     noLoop();
     noFill();
     strokeWeight(1);
-    stroke(255);
-    //angleMode();
+    stroke(0);
 }
 
 function draw() {
-    background(0);
-    interferenceCircles(img, 4, -2)
+    //interferenceCircles(5, -3)
+    interferenceLines(7, 5)
+    if (debugging) {
+        background(0);
+        image(pg, 0, 0)
+    }
 }
 
-function interferenceLines(img) {
-    img.loadPixels();
+function getPixelIntensity(img, x, y) {
+    let d = pixelDensity();
+    let index = 4*(x+y*width);
+    return (img.pixels[index] + img.pixels[index+1] + img.pixels[index+2]) / (3*255);
+}
 
-    for (let y=0; y<=height; y+=3) {
+function interferenceLines(y_step, displacement_factor) {
+    pg.loadPixels();
+
+    for (let y=0; y<=height; y+=y_step) {
         line(0, y, width, y);
         
         beginShape();
-        curveVertex(0, y);
-        for (let x=0; x<=width; x+=1){
-            let index = 4*(x+y*width);
-            let intensity = (img.pixels[index] + img.pixels[index+1] + img.pixels[index+2]) / 3;
-            let displacement = -(intensity/255)*20
-            curveVertex(x, y+displacement);
+        vertex(0, y);
+        for (let x=0; x<=width; x+=y_step){
+            let intensity = getPixelIntensity(pg, x, y);
+            let displacement = (1-intensity)*displacement_factor;
+            vertex(x, y+displacement);
         }
-        curveVertex(width, y);
+        vertex(width, y);
         endShape();
     }
 }
 
-function interferenceCircles(img, r_step, displacement_factor) {
-    img.loadPixels();
-    let index, x, y, intensity, displacement, th_step;
+function interferenceCircles(r_step, displacement_factor) {
+    pg.loadPixels();
+    let x, y, intensity, displacement, th_step;
+    let y_offset = -320;
+    let x_offset = -20;
+    let sc = 0.5;
 
     for (let r=r_step; r<=width/2; r+=r_step) {
         th_step = 2*PI / (2*PI*r / r_step);
@@ -51,20 +73,15 @@ function interferenceCircles(img, r_step, displacement_factor) {
         
         beginShape();
         for (let th=0; th<2*PI; th+=th_step) {
-            //print(th_step);
-            [x, y] = pol2cart(r, th);
-            x = round(x + width/2);
-            y = round(y + height/2);
+            [x, y] = pol2cart(r*sc, th);
+            x = round(x + width/2 + x_offset);
+            y = round(y + height/2 + y_offset);
             
-            index = 4*(x+y*width);
-            if (index >=0 & index <= 4*img.width*img.height){
-                intensity = (img.pixels[index] + img.pixels[index+1] + img.pixels[index+2]) / 3;
-                displacement = (intensity/255)*displacement_factor;
-            }
-            else {displacement = 0}
+            intensity = getPixelIntensity(pg, x, y)
+            displacement = (1-intensity)*displacement_factor;
                     
             [x, y] = pol2cart(r+displacement, th);
-            curveVertex(x + width/2, y + height/2);
+            vertex(x + width/2, y + height/2);
         }
         endShape(CLOSE);
     }
