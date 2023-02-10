@@ -2,7 +2,7 @@ let img, pg;
 const debugging = false;
 
 function preload() {
-  img = loadImage('./assets/Spheer.ai-50.jpg');
+  img = loadImage('./assets/Spheer.ai-46.jpg');
 }
 
 function setup() {
@@ -28,8 +28,8 @@ function setup() {
 }
 
 function draw() {
-    interferenceCircles(5, -4)
-    //interferenceLines(7, 5)
+    interferenceCircles(3, -2)
+    //interferenceLines(12, 50)
     if (debugging) {
         background(0);
         image(pg, 0, 0)
@@ -49,13 +49,13 @@ function interferenceLines(y_step, displacement_factor) {
         line(0, y, width, y);
         
         beginShape();
-        vertex(0, y);
+        curveVertex(0, y);
         for (let x=0; x<=width; x+=y_step){
             let intensity = getPixelIntensity(pg, x, y);
             let displacement = (1-intensity)*displacement_factor;
-            vertex(x, y+displacement);
+            curveVertex(x, y+displacement);
         }
-        vertex(width, y);
+        curveVertex(width, y);
         endShape();
     }
 }

@@ -1,7 +1,3 @@
-// GEOMETRY
-function pol2cart(r, th) {return [r * sin(th), r * cos(th)]}
-
-// OVERLAP
 class Circ {
   constructor(x, y, r) {
     this.x = x;

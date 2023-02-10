@@ -18,5 +18,11 @@ function mod(n, m) {
 	return Math.floor(remain >= 0 ? remain : remain + m)
 }
 
+function invertYAxis() {
+	scale(1, -1);
+	translate(0, -height);
+}
+
+
 const A3_dims = {'short': 297, 'long': 420};
 const A4_dims = {'short': 210, 'long': 297};
