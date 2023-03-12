@@ -23,6 +23,5 @@ function invertYAxis() {
 	translate(0, -height);
 }
 
-
 const A3_dims = {'short': 297, 'long': 420};
 const A4_dims = {'short': 210, 'long': 297};

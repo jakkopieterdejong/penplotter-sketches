@@ -5,7 +5,7 @@ class Point {
     }
 
     paint() {
-        circle(this.x, this.y, 10);
+        circle(this.x, this.y, 3);
     }
 }
 
@@ -31,6 +31,23 @@ class Polygon {
         let temp = this.points[i];
         this.points[i] = this.points[j];
         this.points[j] = temp;
+    }
+
+    removeSelfIntersection() {
+        let indices = this.selfIntersection();
+        while (indices.length > 0) {
+            let N = min(7, floor(Math.sqrt(indices.length)));
+            for (let n=N; n>0; n--){
+                let [i, j] = random(indices);
+                this.swapPoints(i, j);
+            }
+            if (random() < 0.001) {
+                this.points.splice(floor(random(1, this.N-1)), 1);
+                this.N--;
+            }
+            indices = this.selfIntersection();
+        }
+        print(this.N)
     }
 
     paint(debugging=false) {
@@ -97,7 +114,7 @@ function pointInsidePolygon(point, polygon) {
     // find number of intersections
     let n = 0;
     for (let p=0; p<polygon.length-1; p++) {
-        if (linesIntersect(point, outsidePoint, points[p], points[p+1])) {n++}
+        if (linesIntersect(point, outsidePoint, points[p], points[p+1])) {n++; print('ja')}
     }
     return n % 2;
 }
