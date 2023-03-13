@@ -81,24 +81,27 @@ function create_worms(n){
   let err = 0;
   let worms = [];
   let r = 1;
-  let l_max = 100;
-  let x, y, c;
+  let angle_offset = random(0, TWO_PI)
+  let x, y, c, lyr, lmax;
   for (let k=0; k<n; k++){
-    let x = random(0, width);
-    let y = random(0, height);
-    let c = new Circ(x, y, r);
+    x = random(0, width);
+    y = random(0, height);
+    lmax = random(10, 40)
+    c = new CircleCollider(x, y, r);
+    lyr = 3* int((y / (0.5*height)) + randomGaussian() > 1) + random([0, 1, 2]);
     if (c.inside_canvas() & !colmgr.check_collision(c)) {
       colmgr.add_collider_to_grid(c);
-      let w = new Worm(x, y, r, l_max, (x, y) => nf.calc_angle(x, y));
+      let w = new Worm(x, y, r, lmax, (x, y) => nf.calc_angle(x, y, angle_offset));
       w.run();
+      w.renderer = lm.layers[lyr];
+      worms.push(w);
       err = 0;
-      worms.push(w)
     }
     else if (err > 300){
-      break
+      break;
     }
     else {
-      err++
+      err++;
     }
   }  
   return worms
@@ -109,18 +112,9 @@ let nf;
 let lm;
 let colmgr, worms;
 let datestring;
-const pfuncs = [
-  (x, y) => {return prng.random_dec()},
-  (x, y) => {return x+prng.random_num(-0.2, 0.2)},
-  (x, y) => {return y+prng.random_num(-0.2, 0.2)},
-  (x, y) => {return 2*(dist(x, y, 0.5, 0.5))+prng.random_num(-0.2, 0.2)},
-  (x, y) => {return qf.get_value(x, y)}
-]
 
 function setup() {
-  // general settings
   createCanvas(A3_dims.short, A3_dims.long, SVG);
-  //noLoop();
   strokeWeight(1);
   stroke(0);
   noFill();
@@ -138,25 +132,10 @@ function setup() {
   datestring = int(str(year())+str(month())+str(day())+str(day())+str(hour())+str(minute())+str(second()))%1000;
   
   // geom init
-  nf = new NoiseField(datestring, 0.02, nfac=0.25, octaves=4, falloff=0.5); // worm field
+  nf = new NoiseField(datestring, 0.004, nfac=2, octaves=4, falloff=0.5);
 
   background(30);
-  worms = [];
-  let x, y, worm;
-  for (let n = 0; n < 5000; n++) {
-    x = random(0, width);
-    y = random(0, height);
-    worm = new Worm(x, y, 1, (1-abs(y-height/2)/height)*random(10, 100), (x, y) => {return nf.calc_angle(x, y, 0.5*PI, [width/2, 0.4*height])});
-    worm.renderer = lm.layers[0];
-    worms.push(worm)
-    worm.run();
-    
-    //x = random(0, width);
-    //y = random(0, height);
-    //worm = new Worm(x, y, 1, (1-abs(y-height/2)/height)*random(30, 200), (x, y) => {return nf.calc_angle(x, y, -0.5*PI, [width/2, 0.6*height])});
-    //worm.renderer = lm.layers[1];
-    //worms.push(worm)
-  }  
+  worms = create_worms(10000);
 }
 
 function draw() {
@@ -171,7 +150,10 @@ function draw() {
 
   if (all_worms_done) {
     for (let j=0;j<worms.length;j++) {
-      worms[j].paintCurve();
+      let w = worms[j];
+      if (w.points.length > 1) {
+        w.paintCurve();
+      }
     }
     noLoop();
     lm.paint();
